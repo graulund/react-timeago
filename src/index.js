@@ -30,7 +30,9 @@ export type Props = {
    */
   formatter: Formatter,
   /** The Date to display. An actual Date object or something that can be fed to new Date */
-  date: string | number | Date
+  date: string | number | Date,
+  /** A function to be called every time the component is internally updated. */
+  tickCallback: () => mixed
 }
 
 type DefaultProps = {
@@ -58,7 +60,8 @@ export default class TimeAgo extends Component<DefaultProps, Props, void> {
     component: 'time',
     minPeriod: 0,
     maxPeriod: Infinity,
-    formatter: defaultFormatter
+    formatter: defaultFormatter,
+    tickCallback: () => {}
   };
 
   timeoutId: ?number;
@@ -98,6 +101,8 @@ export default class TimeAgo extends Component<DefaultProps, Props, void> {
     if (!refresh) {
       this.forceUpdate()
     }
+
+    this.props.tickCallback()
   };
 
   componentDidMount () {
@@ -134,6 +139,7 @@ export default class TimeAgo extends Component<DefaultProps, Props, void> {
       minPeriod,
       maxPeriod,
       title,
+      tickCallback,
       ...passDownProps
     } = this.props
     /* eslint-enable no-unused-vars */
